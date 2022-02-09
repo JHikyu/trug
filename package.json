@@ -1,0 +1,26 @@
+{
+  "name": "trug",
+  "version": "1.0.7",
+  "description": "",
+  "main": "bin/index.min",
+  "scripts": {
+    "start": "node bin -p 3000 --path ./example",
+    "upload": "uglifyjs bin/index.js -c -m -o bin/index.min.js && npm version patch --no-git-tag-version && npm publish --access=public",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "trug"
+  ],
+  "author": "hikyu",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "ejs": "^3.1.6",
+    "minimist": "^1.2.5",
+    "pug": "^3.0.2"
+  },
+  "bin": {
+    "trug": "./bin/index.js"
+  },
+  "preferGlobal": true
+}
