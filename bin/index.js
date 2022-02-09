@@ -52,6 +52,7 @@ http.createServer(async (req, res) => {
             fs.createReadStream(path.join(PROJECT_PATH, 'public', pathname)).pipe(res);
             return;
         }
+
         log(`${pathname} not found`.underline);
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end(`Cannot ${req.method} ${req.url}`);
