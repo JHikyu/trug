@@ -43,7 +43,15 @@ http.createServer(async (req, res) => {
     log(`request on ${pathname} checking ${fullPath}`);
     const extension = fileExtension(fullPath) ?? fileExtension(path.join(fullPath, 'index'));
     const index = !fileExtension(fullPath);
+
     if(!extension) {
+        //? Check if it's a file in public
+        if(fs.existsSync(path.join(PROJECT_PATH, 'public', pathname))) {
+            log(`serving ${pathname} from public folder`);
+            res.setHeader('Content-Type', 'text/html');
+            fs.createReadStream(path.join(PROJECT_PATH, 'public', pathname)).pipe(res);
+            return;
+        }
         log(`${pathname} not found`.underline);
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end(`Cannot ${req.method} ${req.url}`);
