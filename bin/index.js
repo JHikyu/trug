@@ -101,15 +101,6 @@ http.createServer(async (req, res) => {
     console.log(`Trug 🧺 is running on port ${PORT} 👍`.green.bold);
 });
 
-(async () => {
-    fromDir(path.join(PROJECT_PATH), '.js');
-
-    // fs.watchFile(path.resolve(module), () => {
-    //     log(`${module} changed`);
-    //     delete require.cache[require.resolve(module)];
-    // });
-})();
-
 function fileExtension(path) {
     if(fs.existsSync(path + '.pug'))
         return 'pug';
@@ -126,7 +117,7 @@ function log(msg) {
 
 
 
-async function fromDir(startPath,filter){
+(async function fromDir(startPath, filter){
     if (!fs.existsSync(startPath)){
         return;
     }
@@ -137,12 +128,12 @@ async function fromDir(startPath,filter){
         if (stat.isDirectory()) {
             fromDir(filename, filter); //recurse
         }
-        else if (filename.indexOf(filter) >= 0) {
+        else if (filename.endsWith(filter)) {
             log(`watching ${filename}`);
             fs.watchFile(path.resolve(filename), () => {
-                log(`${filename} changed`);
+                log(`${filename} changed`.yellow);
                 delete require.cache[path.resolve(filename)];
             });
         }
     }
-}
+})(path.join(PROJECT_PATH), '.js');
