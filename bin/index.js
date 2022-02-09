@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
+// openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+
 // Requirements
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const fs = require('fs');
 const path = require("path");
@@ -13,7 +16,12 @@ const ejs = require('ejs');
 const pug = require('pug');
 
 const PORT = isNaN(argv.port) ? 80 : argv.port || argv.p || 80;
+const HTTPS_PORT = isNaN(argv.sslport) ? 443 : argv.sslport || 443;
 const PROJECT_PATH = argv.path || '.';
+const ssl = argv.ssl == true ? {
+    key: fs.readFileSync(path.join(PROJECT_PATH, 'ssl', 'key.pem')),
+    cert: fs.readFileSync(path.join(PROJECT_PATH, 'ssl', 'cert.pem'))
+} : {};
 log(`Booting Trug 🧺 in ${PROJECT_PATH}`);
 
 // Check if project is setup correctly
@@ -23,12 +31,13 @@ log(`public folder: ${PROJECT_PATH}/public ${fs.existsSync(`${PROJECT_PATH}/publ
 log(`src folder: ${PROJECT_PATH}/src ${fs.existsSync(`${PROJECT_PATH}/src`) ? '✓' : '✗'}`);
 
 if(!fs.existsSync(`${PROJECT_PATH}/views`) || !fs.existsSync(`${PROJECT_PATH}/public`) || !fs.existsSync(`${PROJECT_PATH}/src`)) {
-    log('Project not setup correctly. Please run '.red + '`trug init`'.yellow + ' to setup your project.'.red);
+    log('Project not setup correctly. Please run '.red + '`trug-init`'.yellow + ' to setup your project.'.red);
     process.exit(1);
 }
 
 // Run http server
-http.createServer(async (req, res) => {
+
+async function fullServer(req, res) {
     const { pathname } = url.parse(req.url, true);
     const fullPath = path.join(PROJECT_PATH, 'views', pathname, pathname === '/' ? 'index' : '');
 
@@ -97,18 +106,28 @@ http.createServer(async (req, res) => {
         }
         else if(extension === 'ejs') {
             fn = ejs.compile(fullFilePath.toString());
-            res.end(fn(script.data));
+            res.end(fn(script?.data));
         }
         else if(extension === 'html') res.end(data);
         else res.end('');
 
         return;
     });
+}
 
-
+if(ssl.key) {
+    https.createServer(ssl, async (req, res) => {
+        fullServer(req, res);
+    }).listen(HTTPS_PORT, () => {
+        console.log(`Trug 🧺 is running on port ${HTTPS_PORT} 👍 via ssl!`.green.bold);
+    });
+}
+http.createServer(async (req, res) => {
+    fullServer(req, res);
 }).listen(PORT, () => {
     console.log(`Trug 🧺 is running on port ${PORT} 👍`.green.bold);
 });
+
 
 function fileExtension(path) {
     if(fs.existsSync(path + '.pug'))

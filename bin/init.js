@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 
 const argv = require('minimist')(process.argv.slice(2));
@@ -36,7 +38,7 @@ const PROJECT_PATH = argv.path || '.';
     if(response.starterProject) {
         // Create starter project
         // create file
-        fs.mkdirSync(`${PROJECT_PATH}/api`);
+        fs.mkdirSync(`${PROJECT_PATH}/views/api`);
         fs.writeFileSync(`${PROJECT_PATH}/views/api/index.html`, `localhost/api`);
         fs.writeFileSync(`${PROJECT_PATH}/views/api/endpoint.html`, `localhost/api/endpoint`);
         fs.writeFileSync(`${PROJECT_PATH}/views/index.html`, ``);
@@ -56,6 +58,7 @@ const PROJECT_PATH = argv.path || '.';
         `
         );
     }
+
 
     console.log(`Enjoy your new project!`.green);
     console.log('Run ' + '`trug`'.yellow + ' to start your server');
