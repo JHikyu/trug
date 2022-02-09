@@ -18,12 +18,12 @@ log(`Booting Trug 🧺 in ${PROJECT_PATH}`);
 
 // Check if project is setup correctly
 log('Checking project folders...');
-log(`views folder: ${PROJECT_PATH}/views ${fs.existsSync(`${PROJECT_PATH}/views`) ? '✅' : '❌'}`);
-log(`public folder: ${PROJECT_PATH}/public ${fs.existsSync(`${PROJECT_PATH}/public`) ? '✅' : '❌'}`);
-log(`src folder: ${PROJECT_PATH}/src ${fs.existsSync(`${PROJECT_PATH}/src`) ? '✅' : '❌'}`);
+log(`views folder: ${PROJECT_PATH}/views ${fs.existsSync(`${PROJECT_PATH}/views`) ? '✓' : '✗'}`);
+log(`public folder: ${PROJECT_PATH}/public ${fs.existsSync(`${PROJECT_PATH}/public`) ? '✓' : '✗'}`);
+log(`src folder: ${PROJECT_PATH}/src ${fs.existsSync(`${PROJECT_PATH}/src`) ? '✓' : '✗'}`);
 
 if(!fs.existsSync(`${PROJECT_PATH}/views`) || !fs.existsSync(`${PROJECT_PATH}/public`) || !fs.existsSync(`${PROJECT_PATH}/src`)) {
-    log('Project not setup correctly. Please run '.red + '`trug init`'.blue + ' to setup your project.'.red);
+    log('Project not setup correctly. Please run '.red + '`trug init`'.yellow + ' to setup your project.'.red);
     process.exit(1);
 }
 
@@ -57,7 +57,7 @@ http.createServer(async (req, res) => {
     const fullFilePathJs = `${fullPath}${index ? '\\index' : ''}`;
     let script;
     if(fs.existsSync(fullFilePathJs + '.js')) {
-        nocache(path.resolve(`${fullFilePathJs}.js`));
+        // nocache(path.resolve(`${fullFilePathJs}.js`));
 
         try {
             script = await require(path.resolve(`${fullFilePathJs}.js`))();
@@ -101,12 +101,14 @@ http.createServer(async (req, res) => {
     console.log(`Trug 🧺 is running on port ${PORT} 👍`.green.bold);
 });
 
+(async () => {
+    fromDir(path.join(PROJECT_PATH), '.js');
 
-function nocache(module) {
-    fs.watchFile(path.resolve(module), () => {
-        delete require.cache[require.resolve(module)];
-    });
-}
+    // fs.watchFile(path.resolve(module), () => {
+    //     log(`${module} changed`);
+    //     delete require.cache[require.resolve(module)];
+    // });
+})();
 
 function fileExtension(path) {
     if(fs.existsSync(path + '.pug'))
@@ -124,4 +126,23 @@ function log(msg) {
 
 
 
-
+async function fromDir(startPath,filter){
+    if (!fs.existsSync(startPath)){
+        return;
+    }
+    var files = fs.readdirSync(startPath);
+    for(var i = 0 ; i < files.length ; i++) {
+        var filename = path.join(startPath,files[i]);
+        var stat = await fs.lstatSync(filename);
+        if (stat.isDirectory()) {
+            fromDir(filename, filter); //recurse
+        }
+        else if (filename.indexOf(filter) >= 0) {
+            log(`watching ${filename}`);
+            fs.watchFile(path.resolve(filename), () => {
+                log(`${filename} changed`);
+                delete require.cache[path.resolve(filename)];
+            });
+        }
+    }
+}

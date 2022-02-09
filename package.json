@@ -1,6 +1,6 @@
 {
   "name": "trug",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "bin/index.min",
   "scripts": {
@@ -17,7 +17,8 @@
     "colors": "^1.4.0",
     "ejs": "^3.1.6",
     "minimist": "^1.2.5",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "trug": "^1.0.7"
   },
   "bin": {
     "trug": "./bin/index.js"

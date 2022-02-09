@@ -6,8 +6,7 @@ module.exports = async () => {
         date: new Date(),
         message: 'Hello World'
     });
-
-
+    
     return {
         data: {
             title: '$$TEST TITLE VARIABLE$$',
