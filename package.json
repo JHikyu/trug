@@ -1,10 +1,10 @@
 {
   "name": "trug",
-  "version": "1.1.2",
+  "version": "1.2.19",
   "description": "",
   "main": "bin/index.min",
   "scripts": {
-    "start": "node bin -p 3000 --path ./example",
+    "start": "node bin -p 3000 --path ./example/example1",
     "upload": "uglifyjs bin/index.js -c -m -o bin/index.min.js && npm version patch --no-git-tag-version && npm publish --access=public",
     "test": "node test.js"
   },
@@ -16,10 +16,12 @@
   "dependencies": {
     "colors": "^1.4.0",
     "ejs": "^3.1.6",
+    "mime": "^3.0.0",
     "minimist": "^1.2.5",
     "prompts": "^2.4.2",
     "pug": "^3.0.2",
-    "trug": "^1.0.7"
+    "trug": "^1.0.7",
+    "ws": "^8.5.0"
   },
   "bin": {
     "trug-init": "./bin/init.js",
