@@ -16,8 +16,4 @@ module.exports = function(socket) {
         });
     });
 
-    socket.on('test', (socket, data) => {
-        console.log(data);
-    });
-
 };

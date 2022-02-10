@@ -1,0 +1,31 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Group chat
+
+        link(rel="stylesheet", href="style.css")
+    body 
+        #chat
+            #topbar
+                p Group chat
+            #messages
+                p.log
+                    | Connected as #{name}
+            #form
+                input(type="text", id="message")
+                button(type="submit", id="send") Send
+
+
+        script(src="/socketClient.js")
+        script.
+            const name = "#{name}";
+            const id = "#{id}";
+
+            document.querySelector('#send').addEventListener('click', () => {
+                const message = document.querySelector('#message').value;
+
+                wsServer.send(JSON.stringify({event: 'sendMessage', data: {name, message, id}}));
+            });

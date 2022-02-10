@@ -26,6 +26,14 @@ const PROJECT_PATH = argv.path || '.';
         initial: true,
         active: 'yes',
         inactive: 'no'
+    },
+    {
+        type: 'toggle',
+        name: 'socket',
+        message: 'Create socket template?',
+        initial: false,
+        active: 'yes',
+        inactive: 'no'
     }
     ]);
   
@@ -95,6 +103,66 @@ html(lang="en")
 `module.exports = async (trug) => {
     //* Run once on page load [index.html]
 };`);
+    }
+
+    if(response.socket) {
+        fs.writeFileSync(`${PROJECT_PATH}/socket.js`,
+`let sockets = [];
+
+module.exports = function(socket) {
+
+    // Connection event
+    socket.on('connection', (socket) => {
+        sockets.push(socket);
+    });
+
+    // Close event
+    socket.on('close', (socket) => {
+        sockets.splice(sockets.indexOf(socket), 1);
+    });
+
+    // Custom event
+    socket.on('myEvent', (socket, data) => {
+        console.log('received myEvent', data, 'sending back to all clients');
+        sockets.forEach(s => {
+            s.send(data);
+        });
+    });
+
+};`);
+        fs.writeFileSync(`${PROJECT_PATH}/views/index.html`,
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    Landing page runnig on trug 🧺
+    reachable > localhost/
+</body>
+<script src="/socketClient.js"></script>
+</html>`);
+
+        fs.writeFileSync(`${PROJECT_PATH}/public/socketClient.js`,
+`const url = "ws://localhost:80";
+const wsServer = new WebSocket(url);
+
+wsServer.onopen = function() {
+    console.log("Connected to " + url);
+
+    // Send test message
+    wsServer.send(JSON.stringify({event: 'myEvent', data: 'Hello from client!'}));
+};
+
+wsServer.onmessage = function(event) {
+    const { data } = event;
+    console.log(data);
+};`);
+
     }
 
     console.log(`Enjoy your new project!`.green);

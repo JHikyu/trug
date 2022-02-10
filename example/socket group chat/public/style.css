@@ -1,0 +1,78 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+
+    background: linear-gradient(302deg, rgb(57 57 139), rgb(200 43 40));
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#chat {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 600px;
+    height: 90vh;
+
+    background: linear-gradient(188deg, rgb(52, 52, 58), rgb(23, 23, 31));
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#chat #topbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 2rem;
+    color: white;
+    border-bottom: 1px solid grey;
+}
+#chat #topbar p {
+    margin: .5rem;
+}
+
+#messages {
+    flex: 1;
+    padding: 1rem;
+
+    overflow-y: scroll;
+}
+#messages .message {
+    margin: .25rem 0;
+
+    font-size: 1.5rem;
+    color: #bababa;
+}
+#messages .log {
+    margin: .25rem 0;
+
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7e7e7e;
+}
+
+#form {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-thumb{
+    background: #B3AFB3;
+    border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: #B3AFB3;
+}
+::-webkit-scrollbar-track{
+    background: transparent;
+}
