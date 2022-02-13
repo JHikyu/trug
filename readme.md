@@ -20,7 +20,9 @@ From static file serve to full-stack web-appilcation
 ## Project structure
 .
 ├── ...
+
 ├── views                   # Routes
+
 │   ├── index.html          # Root endpoint on localhost/
 │   ├── index.js            # Backend ran, when request on index.html
 │   └── faq.pug             # Templates work fine localhost/faq (no .js needed)
